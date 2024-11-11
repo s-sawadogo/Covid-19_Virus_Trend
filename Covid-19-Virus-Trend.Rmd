@@ -1,0 +1,83 @@
+---
+title: "Investigating Covid-19-Virus-Trend"
+output: html_document
+date: "2024-11-11"
+---
+
+# **This tutorial intends to investigate the Covid-19 Virus Trend in different countries**
+
+#### **Importing necessary libraries**
+
+
+```{r echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(data.table)
+```
+```{r}
+#Getting the working directory
+getwd()
+```
+
+
+#### **Importing data**
+
+```{r}
+df_covid19 = fread("tested_worldwide.csv")
+```
+
+#### **Showing a subset  of the data**
+
+
+```{r}
+#6 First rows
+head(df_covid19)
+
+```
+```{r}
+#6 Last rows
+tail(df_covid19)
+```
+
+
+#### **Displaying the dimension of the dataset**
+
+```{r}
+dim(df_covid19)
+#The dataset has 27641 observations and 12 columns
+```
+
+#### **Puting the columns names in a variable**
+
+```{r}
+df_cols <- colnames(df_covid19)
+df_cols
+```
+
+
+#### **Exploring null values by columns**
+
+
+
+```{r}
+df_covid19 %>% is.na() %>% colSums()
+```
+
+
+#### **Giving the purcentages of null values by columns**
+
+
+```{r}
+n = dim(df_covid19)[1]
+vec <- df_covid19 %>% is.na() %>% colSums()
+round((vec/n)*100,2)
+#Columns with no null values: Date, Country_Region,  Province_State
+#Columns with more than 30% of null values: active, hospitalized, hospitalizedCur and recovered 
+```
+
+
+
+
+
+
+
