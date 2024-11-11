@@ -75,9 +75,91 @@ round((vec/n)*100,2)
 #Columns with more than 30% of null values: active, hospitalized, hospitalizedCur and recovered 
 ```
 
+#
+
+#
+```{r}
+library(tibble)
+```
+
+```{r}
+glimpse(df_covid19)
+```
+#### **Let's look at the countries in the dataset**
+
+```{r}
+df_covid19$Country_Region %>% unique()
+# There are 147 countries in total
+```
+
+#### ** The regions in the dataset**
+
+```{r}
+df_covid19$Province_State %>% unique()
+# There are 81 provinces
+```
+```{r}
+#test<-df_covid19 %>% select(Country_Region,Province_State) %>% 
+  #arrange(Country_Region) %>% distinct()
+```
+
+#### **Let's subset the dataset into  "All States" provinces in order to make analyses in country level**
+
+```{r}
+df_covid19_cl<-df_covid19 %>% 
+  filter(Province_State=="All States") %>% 
+  select(-c(Province_State))
+```
+
+
+#### **Let's make analyses only on daily variables**
+
+#### **A description of all variables**
+
+
+```{r}
+colnames(df_covid19_cl)
+```
+
+* Date: The date 
+* Country_Region: The country names
+* positive: The cumulative number of positive cases
+* active: The number of actively cases on the day
+* hospitalized: The cumulative number of hospitalized cases
+* hospitalizedCurr: the daily number of hospitalized cases
+* recovered: The cumulative number of recovered cases
+* death: The cumulative number of dead cases
+* total_tested: The cumulative number of tested cases
+* daily_tested: The daily number of tests
+* daily_positive: The daily number of positive cases
 
 
 
+```{r}
+df_covid19_cl_d<-df_covid19_cl %>% 
+  select(c(Date,Country_Region,active,hospitalizedCurr,daily_tested,daily_positive))
+```
 
 
+
+#### **Let's aggregate the columns by countries to have the total number of cases by countries**
+
+
+```{r}
+df_covid19_cl1 <- df_covid19_cl %>% 
+  group_by(Country_Region) %>% 
+  summarise(active=sum(active,na.rm = T),
+            hospitalized=sum(hospitalizedCurr,na.rm = T),
+           tested = sum(daily_tested,na.rm = T),
+           positive = sum(daily_positive,na.rm = T))
+```
+
+#### **The top 15 countries with high number of tests**
+
+
+```{r}
+df_covid19_cl1 %>% 
+  arrange(desc(tested)) %>% 
+  head(15)
+```
 
