@@ -14,6 +14,9 @@ library(dplyr)
 library(ggplot2)
 library(data.table)
 ```
+
+
+
 ```{r}
 #Getting the working directory
 getwd()
@@ -53,6 +56,36 @@ dim(df_covid19)
 df_cols <- colnames(df_covid19)
 df_cols
 ```
+#### **Some summary statistics**
+
+```{r}
+summary(df_covid19)
+```
+##### **Regarding the summary statistics, we can say that:**
+
+*Data was collected from the 16th January 2020 to the 09th November 2020.
+*Some columns have negative values (active, daily_tested, daily_positive) which should 
+require our attention.
+
+#### **Let's see what these records look like**
+
+
+```{r}
+df_negative_values <-df_covid19%>% 
+  filter(active <0 | daily_tested <0 | daily_positive <0) %>% 
+  arrange(Date,Country_Region)
+#There are 340 values in that case, 1.2%
+```
+
+#### **For simplicity, let's remove these records to prevent baises**
+
+```{r}
+df_test <-df_covid19%>% 
+  filter(!(active<0 | daily_tested <0 | daily_positive <0)) %>% 
+  #filter(active >=0 & daily_tested >=0 & daily_positive >=0) %>%
+  arrange(Date,Country_Region)
+```
+
 
 
 #### **Exploring null values by columns**
@@ -103,7 +136,10 @@ df_covid19$Province_State %>% unique()
   #arrange(Country_Region) %>% distinct()
 ```
 
-#### **Let's subset the dataset into  "All States" provinces in order to make analyses in country level**
+
+
+
+#### **Let's subset the dataset into  the "All States" provinces label in order to make analyses in country level**
 
 ```{r}
 df_covid19_cl<-df_covid19 %>% 
@@ -139,6 +175,9 @@ colnames(df_covid19_cl)
 df_covid19_cl_d<-df_covid19_cl %>% 
   select(c(Date,Country_Region,active,hospitalizedCurr,daily_tested,daily_positive))
 ```
+
+
+
 
 
 
